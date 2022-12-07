@@ -7,27 +7,26 @@ let startIndex = String.Index(utf16Offset: 2,
 let endIndex = String.Index(utf16Offset: 3,
                             in: numberString)
 
-let numberSubString = numberString[startIndex...endIndex]
-let numberChar = numberString[startIndex]
+let numberSubString = numberString[startIndex...endIndex] // index range
+let numberChar = numberString[startIndex] // single index
 
-type(of: numberSubString) // index range
-type(of: numberChar) // single index
+type(of: numberSubString) // substring
+type(of: numberChar) // character
 
-Int(numberSubString) // substring
-numberChar.wholeNumberValue // character
+Int(numberSubString)
+numberChar.wholeNumberValue
 
 // Convert integer ranges to string index ranges
 extension StringProtocol {
-    subscript(range: Range<Int>) -> SubSequence {
-        let lowerIndex = self.index(self.startIndex, offsetBy: range.lowerBound)
-        let upperIndex = self.index(self.startIndex, offsetBy: range.upperBound)
-        return self[lowerIndex..<upperIndex]
+    subscript(_ range: Range<Int>) -> SubSequence {
+        let lowerBound = Index(utf16Offset: range.lowerBound, in: self)
+        let upperBound = Index(utf16Offset: range.upperBound, in: self)
+        return self[lowerBound..<upperBound]
     }
-
-    subscript(index: Int) -> SubSequence {
-        let lowerIndex = self.index(self.startIndex, offsetBy: index)
-        let upperIndex = self.index(lowerIndex, offsetBy: 1)
-        return self[lowerIndex..<upperIndex]
+    
+    subscript(_ index: Int) -> SubSequence.Element {
+        let index = Index(utf16Offset: index, in: self)
+        return self[index]
     }
 }
 
